@@ -1,3 +1,5 @@
+# A function adapted from the lares package that extends the number of years one can scrape from timeanddate.com
+
 time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Date()), 
                                     quiet = FALSE, include_regions = FALSE) 
 {
