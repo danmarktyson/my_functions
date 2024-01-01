@@ -1,4 +1,4 @@
-# A function adapted from the lares package that extends the number of years one can scrape from timeanddate.com
+# An adapted version of the holidays function from the lares package.
 
 time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Date()), 
                                     quiet = FALSE, include_regions = FALSE) 
@@ -11,8 +11,9 @@ time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Da
   }
   year  <- year(Sys.Date())
   years <- years[years %in% ((year - 20L):(year + 20L))]
-  combs <- expand.grid(years, countries) %>% dplyr::rename(year = "Var1", 
-                                                           country = "Var2")
+  combs <- expand.grid(years, countries) %>%
+    dplyr::rename(year = "Var1", 
+                  country = "Var2")
   for (i in seq_len(nrow(combs))) {
     if (!quiet) {
       message(paste0(">>> Extracting ", combs$country[i], 
@@ -28,9 +29,9 @@ time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Da
       rvest::html_nodes(".table") %>%
       rvest::html_table(fill = TRUE) %>% 
       data.frame(.) %>%
-      filter(!is.na(.data$Date)) %>% 
-      select(-2L) %>%
-      mutate(Date = paste(.data$Date, combs$year[i])) %>%
+      dplyr::filter(!is.na(.data$Date)) %>% 
+      dplyr::select(-2L) %>%
+      dplyr::mutate(Date = paste(.data$Date, combs$year[i])) %>%
       .[-1L, ] %>%
       lares::removenacols(all = TRUE) %>%
       lares::removenarows(all = TRUE)
@@ -55,13 +56,14 @@ time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Da
            v2t(head(holidays$Date, 3)))
     })
     
-    result <- data.frame(holiday = holidays$Date, holiday_name = holidays$Holiday, 
+    result <- data.frame(holiday = holidays$Date,
+                         holiday_name = holidays$Holiday, 
                          holiday_type = holidays$Holiday.Type)
     
     if (include_regions) 
       result$holiday_details <- holidays$Holiday.Details
     result <- result %>%
-      mutate(
+      dplyr::mutate(
         national   = grepl("National|Federal", 
                            holidays$Holiday.Type),
         observance = grepl("Observance", 
@@ -73,7 +75,7 @@ time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Da
                             holidays$Holiday.Type)
       ) %>% {
         if (length(unique(countries)) > 1L) {
-          mutate(
+          dplyr::mutate(
             .,
             country = combs$country[i]
           )
@@ -83,13 +85,13 @@ time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Da
         }
       }
     result$county <- combs$country[i]
-    results <- bind_rows(results, result)
+    results <- dplyr::bind_rows(results, result)
   }
   
   results <- results %>%
-    filter(!is.na(.data$holiday)) %>% 
+    dplyr::filter(!is.na(.data$holiday)) %>% 
     lares::cleanNames() %>%
-    as_tibble()
+    dplyr::as_tibble()
   
   return(results)
 }
