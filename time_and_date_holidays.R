@@ -56,7 +56,7 @@ time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Da
            v2t(head(holidays$Date, 3)))
     })
     
-    result <- data.frame(holiday = holidays$Date,
+    result <- data.frame(holiday      = holidays$Date,
                          holiday_name = holidays$Holiday, 
                          holiday_type = holidays$Holiday.Type)
     
