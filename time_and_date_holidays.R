@@ -4,8 +4,7 @@ time_and_date_holidays <- function (countries = "Venezuela", years = year(Sys.Da
                                     quiet = FALSE, include_regions = FALSE) 
 {
   results <- NULL
-  if (any(!years %in% (year(Sys.Date()) - 20):(year(Sys.Date()) + 
-                                               20))) {
+  if (any(!years %in% (year(Sys.Date()) - 20):(year(Sys.Date()) + 20))) {
     warning(paste("Only allowing ± 20 years from today. Check:", 
                   v2t(years)))
   }
